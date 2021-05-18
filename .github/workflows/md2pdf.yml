@@ -32,28 +32,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 
+          tag_name: alpha
           release_name: Publication documents
           draft: true
           prerelease: false
-          
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Publish Assets as Release
+        id: publish_assets
+        run: |
+          set -x
+          assets=()
+          for asset in ./*.pdf; do
+            assets+=("-a" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pdfs/test.pdf
-          asset_name: test.pdf
-          asset_content_type: application/pdf
-          
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pdfs/test2.pdf
-          asset_name: test2.pdf
-          asset_content_type: application/pdf
           
       - uses: eregon/publish-release@v1
         env:
