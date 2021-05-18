@@ -36,12 +36,13 @@ jobs:
           release_name: Publication documents
           draft: true
           prerelease: false
+          
       - name: Publish Assets as Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: pdfs/test.pdf
           asset_name: 'test.pdf'
           asset_content_type: application/pdf
