@@ -38,6 +38,8 @@ jobs:
           prerelease: false
       - name: Publish Assets as Release
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: pdfs/test.pdf
@@ -45,11 +47,13 @@ jobs:
           asset_content_type: application/pdf
           
       - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: pdfs/test2.pdf
-          asset_name: 'test2.pdf'
-          asset_content_type: application/pdf 
+          asset_name: test2.pdf
+          asset_content_type: application/pdf
           
       - uses: eregon/publish-release@v1
         env:
