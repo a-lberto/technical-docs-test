@@ -3,20 +3,15 @@
 name: Docs to PDF
 # This workflow is triggered on pushes to the repository.
 on: push
-    # branches:
-    # - master
-    # Paths can be used to only trigger actions when you have edited certain files, such as a file within the /docs directory
-    # paths:
-      # - 'docs/**.md'
-      # - 'docs/images/**'
-
 jobs:
   converttopdf:
     name: Build PDF
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: baileyjm02/markdown-to-pdf@v1
+      
+      - name: Markdown To PDF
+        uses: baileyjm02/markdown-to-pdf@v1
         with:
           input_dir: docs
           output_dir: pdfs
@@ -25,20 +20,23 @@ jobs:
           image_import: ./images
           # Default is true, can set to false to only get PDF files
           build_html: false
-      - uses: actions/upload-artifact@v1
-        with:
-          name: docs
-          path: pdfs          
+ 
+      - name: Delete Previous Drafts
+        uses: hugo19941994/delete-draft-releases@v0.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: alpha
-          release_name: Draft
+          tag_name: 
+          release_name: Publication documents
           draft: true
-          prerelease: true
+          prerelease: false
+          
       - uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,15 +45,27 @@ jobs:
           asset_path: pdfs/test.pdf
           asset_name: test.pdf
           asset_content_type: application/pdf
-      - uses: actions/upload-release-asset@v1.0.1
+         
+      - run: |
+          set -x
+          assets=()
+          for asset in ./*.pdf; do
+            assets+=("-a" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pdfs/test2.pdf
-          asset_name: test2.pdf
-          asset_content_type: application/pdf
-
+          
+  #    - uses: actions/upload-release-asset@v1.0.1
+  #      env:
+   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    with:
+     #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #    asset_path: pdfs/test2.pdf
+       #   asset_name: test2.pdf
+        #  asset_content_type: application/pdf
+          
       - uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
