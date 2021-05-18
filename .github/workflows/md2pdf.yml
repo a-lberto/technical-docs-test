@@ -35,7 +35,7 @@ jobs:
           tag_name: alpha
           release_name: Publication Documents
           draft: true
-          prerelease: true
+          prerelease: false
           
       - name: Publish Assets as Release
         uses: actions/upload-release-asset@v1
