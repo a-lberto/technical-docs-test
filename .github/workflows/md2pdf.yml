@@ -41,7 +41,7 @@ jobs:
         run: |
           set -x
           assets=()
-          for asset in ./*.pdf; do
+          for asset in pdfs/*.pdf; do
             assets+=("-a" "$asset")
           done
           tag_name="${GITHUB_REF##*/}"
