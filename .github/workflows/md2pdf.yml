@@ -32,30 +32,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: test
-          release_name: Publication Documents
+          tag_name: draft 
+          release_name: Published Documents
           draft: true
-          prerelease: true
-          
-      - name: Publish Assets as Release
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pdfs/test.pdf
-          asset_name: 'test.pdf'
-          asset_content_type: application/pdf
-          
+          prerelease: false
+
       - uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pdfs/test2.pdf
-          asset_name: test2.pdf
+          asset_path: pdfs/test.pdf
+          asset_name: test.pdf
           asset_content_type: application/pdf
-          
+
       - uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
