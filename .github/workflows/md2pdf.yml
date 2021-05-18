@@ -33,9 +33,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: alpha
-          release_name: Publication documents
+          release_name: Publication Documents
           draft: true
-          prerelease: false
+          prerelease: true
           
       - name: Publish Assets as Release
         uses: actions/upload-release-asset@v1
